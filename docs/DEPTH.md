@@ -14,6 +14,7 @@
 | M4 金额分摊 | 运行样例并复核证据 | `/api/allocations/calculate` / `/allocations` | `app/modules/m4_allocations/core.py` `app/modules/m4_allocations/service.py` | `tests/test_m4_allocations.py` |
 | M5 尾差裁决 | 运行样例并复核证据 | `/api/remainders/resolve` / `/remainders` | `app/modules/m5_remainders/core.py` `app/modules/m5_remainders/service.py` | `tests/test_m5_remainders.py` |
 | M6 批次复核 | 运行样例并复核证据 | `/api/export/allocations.csv` / `/runs` | `app/modules/m6_runs/core.py` `app/modules/m6_runs/service.py` | `tests/test_m6_runs.py` |
+| M7 复核合并 | 提交署名意见、裁决争议并复核合并结果 | `/api/review/merge` / `/review` | `app/modules/m7_review/core.py` `app/modules/m7_review/service.py` `app/modules/m7_review/store.py` | `tests/test_m7_review.py` |
 
         ## 陷阱登记
 
@@ -29,6 +30,10 @@
 | TRAP-22 | 真实边界输入 | 朴素处理会错分 | 保留证据并稳定裁决 | `app/modules/m2_eligibility/core.py` | `tests/test_m2_eligibility.py::test_trap_2` |
 | TRAP-24 | 真实边界输入 | 朴素处理会错分 | 保留证据并稳定裁决 | `app/modules/m3_weights/core.py` | `tests/test_m3_weights.py::test_trap_2` |
 | TRAP-26 | 真实边界输入 | 朴素处理会错分 | 保留证据并稳定裁决 | `app/modules/m4_allocations/core.py` | `tests/test_m4_allocations.py::test_trap_2` |
+| TRAP-31 | 末写覆盖抹掉异议、整份冻结丢掉更正 | 朴素覆盖或整份冻结 | 字段级三方合并，分歧挂争议待裁决 | `app/modules/m7_review/core.py` | `tests/test_m7_review.py::test_conflict_pauses_weight_others_continue` |
+| TRAP-32 | 并发新意见使旧裁决失效 | 朴素裁决不绑版本 | 裁决绑定已见意见序号，读取时判定失效 | `app/modules/m7_review/core.py` | `tests/test_m7_review.py::test_concurrent_opinion_invalidates_adjudication` |
+| TRAP-33 | 重试重复收件 | 朴素插入重复行 | 令牌幂等收件，同令牌异内容拒绝 | `app/modules/m7_review/store.py` | `tests/test_m7_review.py::test_opinion_retry_not_duplicated` |
+| TRAP-34 | 合并中断丢状态、失败毁旧版 | 朴素原地覆盖 | 合并与权重单事务提交新版本，按摘要复用 | `app/modules/m7_review/store.py` | `tests/test_m7_review.py::test_failure_keeps_previous_version` |
 
         ## 对账规则
 
